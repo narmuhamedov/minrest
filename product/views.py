@@ -4,7 +4,7 @@ from product.serializers import ProductSerializer
 from product.models import Product
 from rest_framework import status
 @api_view(['GET'])
-def product_list_view(request):
+def product_list_view (request):
     product = Product.objects.all()
     data = ProductSerializer(product, many=True).data
     return Response(data=data)
