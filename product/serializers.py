@@ -20,7 +20,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         #fields = "__all__"
-        fields = "id title price category reviews count_reviews all_reviews".split()
+        fields = "id title price category reviews rating count_reviews all_reviews".split()
 
     def get_category(self, product):
         try:

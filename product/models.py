@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Avg
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -22,6 +24,16 @@ class Product(models.Model):
     @property
     def count_reviews(self):
         return self.reviews.all().count()
+    @property
+    def rating(self):
+        return Review.objects.filter(product=self).aggregate(Avg('stars'))
+        # sum_ = 0
+        # for i in reviews:
+        #     sum_+= i.stars
+        # try:
+        #     return sum_/reviews.count()
+        # except:
+        #     return 0
 
     @property
     def all_reviews(self):
@@ -30,6 +42,7 @@ class Product(models.Model):
 
 
 class Review(models.Model):
+    stars = models.PositiveIntegerField(default=5, null=True)
     text = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
