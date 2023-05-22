@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from product.models import Product, Category, Review
-
+from rest_framework.exceptions import ValidationError
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -34,3 +34,16 @@ class ProductSerializer(serializers.ModelSerializer):
                                                             product=product), many=True)
         return serializer.data
 
+class ProductCreateUpdateSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=10, min_length=2)
+    description = serializers.CharField()
+    price = serializers.FloatField()
+    category_id = serializers.IntegerField()
+
+    def validate(self, attrs):
+        id = attrs['category_id']
+        try:
+            Category.objects.get(id=id)
+        except Category.DoesNotExist:
+            raise ValidationError(f'Category with id={id}, not found')
+        return attrs
